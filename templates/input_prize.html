@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>選擇獎品</title>
+    <style>
+        body {
+            background-image: url('../static/images/background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 30vh;
+            /* height: 50vh; */
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 加上外框陰影，看起來更有層次感 */
+        }
+
+        select, input[type="checkbox"], input[type="submit"] {
+            margin: 8px 0;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-text {
+            margin-left: 10px;
+        }
+
+        /* input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        } */
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .error {
+            background-color: #ffcccc; /* 淺紅色背景 */
+            color: #d8000c; /* 深紅色文字 */
+            border: 1px solid #d8000c; /* 深紅色邊框 */
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success {
+            background-color: #d4edda; /* 淺綠色背景 */
+            color: #155724; /* 深綠色文字 */
+            border: 1px solid #c3e6cb; 
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .action-button, .delete-button {
+            width: 100%; /* 設置按鈕的寬度為 100% */
+            padding: 10px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            display: block; /* 使按鈕為塊級元素 */
+            box-sizing: border-box;
+        }
+
+        .action-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .action-button:hover {
+            background-color: #45a049;
+        }
+
+        .delete-button {
+            background-color: transparent;
+            color: #4CAF50;
+            font-size: 16px;
+        }
+
+        .delete-button:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <h2>選擇獎品</h2>
+    {% if message %}
+        <div class="message {% if error %}error{% else %}success{% endif %}">{{ message }}</div>
+    {% endif %}
+
+    <form method="POST" action="/handle_actions01">
+        <!-- 初始化字典來記錄每個獎品的領取次數和未領獎人數 -->
+        {% set prize_counts = {} %}
+        {% set prize_unclaimed = {} %}
+        {% for winner in winnings %}
+            <!-- 更新獎品領取次數 -->
+            {% if winner.prizeId not in prize_counts %}
+                {% set _ = prize_counts.update({winner.prizeId: 1}) %}
+            {% else %}
+                {% set _ = prize_counts.update({winner.prizeId: prize_counts[winner.prizeId] + 1}) %}
+            {% endif %}
+             <!-- 更新未領獎人數 -->
+            {% if winner.prizeId not in prize_unclaimed %}
+                {% set _ = prize_unclaimed.update({winner.prizeId: 0}) %}
+            {% endif %}
+            {% if not winner.claimed %}
+                {% set _ = prize_unclaimed.update({winner.prizeId: prize_unclaimed[winner.prizeId] + 1}) %}
+            {% endif %}
+        {% endfor %}
+        
+
+        <select name="prizeId">
+            <option value="" selected>選擇獎品</option>
+            {% for prize in prizes %}
+            <option value="{{ prize.prizeId }}">
+                {{ prize.prizeName }} - 
+                剩餘數量：{{ prize.quantity - prize_counts[prize.prizeId]|default(0) }}
+                {% if prize.prizeId in prize_unclaimed %}
+                    - 未領獎人數：{{ prize_unclaimed[prize.prizeId] }}
+                {% endif %}
+            </option>
+            {% endfor %}
+        </select><br>
+
+        <input type="submit" name="action" value="選擇得獎人" class="action-button">
+        <input type="submit" name="action" value="得獎名單" class="delete-button">
+        <!-- <a href="/winning_list">得獎名單</a> -->
+        <a href="/logout">登出</a>
+    </form>
+
+    <footer>
+        <div style="text-align: center; background-color: #333; color: #fff; padding: 10px;">
+            &copy; 2024 明明如意團隊   All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>

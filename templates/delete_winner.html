@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>刪除未領獎得獎人</title>
+    <style>
+        body {
+            height: 100%;
+            background-image: url('../static/images/background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        /* 基本的頁面樣式 */
+        /* body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        } */
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .table-container {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            overflow-y: auto; /* 啟用垂直捲軸 */
+            max-height: 60vh;
+            border: 1px solid #ddd; /* 可選，為容器添加邊框 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 加上外框陰影，看起來更有層次感 */
+            background-color: #ffffff; /* 設定背景色為白色，與透明背景形成對比 */
+        }
+
+        /* 表格樣式，讓表格更顯眼 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            /* border: 2px solid #333; 加粗的邊框 */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            background-color: #fff; /* 白色背景讓內容更突出 */
+        }
+
+        th {
+            background-color: #76b947; /* 修改為綠色系背景色 */
+            color: white; /* 修改為白色字體 */
+            font-size: 16px; /* 加大字體讓標題更突出 */
+            position:sticky;
+            top: 0;
+        }
+
+        /* 按鈕容器的樣式，讓按鈕水平放置 */
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px auto; /* 置中按鈕 */
+            display: block; /* 設置為塊級元素 */
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f44336;
+            text-align: center; /* 確保文字居中 */
+        }
+
+        .action-button:hover {
+            background-color: #d32f2f;
+        }
+
+        /* 錯誤訊息的樣式 */
+        .message {
+            color: red;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* 返回首頁連結的樣式 */
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #00f;
+            text-decoration: none;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <h2>獎品名稱: {{ prize.prizeName }}</h2>
+    <form method="POST" action="/delete_winner">
+        <input type="hidden" name="prizeId" value="{{ prize.prizeId }}">
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="selectAll" style="display: none;" onclick="toggleCheckboxes(this)">
+                        <label for="selectAll">全選</label>
+                    </th>
+                    <th>序號</th>
+                    <th>姓名</th>
+                    <th>是否領獎</th>
+                </tr>
+                {% for win in winnings_query %}
+                    <tr>
+                        <td>
+                            {% if not win.claimed %}
+                            <input type="checkbox" name="selected" value="{{ win.seqNum }}">
+                            {% endif %}
+                        </td>
+                        <td>{{ win.seqNum }}</td>
+                        <td>{{ win.name }}</td>
+                        <td>
+                            {% if win.claimed %}
+                            <span style="color: blue;">已領獎</span>
+                            {% else %}
+                            <span style="color: red;">尚未領獎</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <input type="submit" value="刪除" class="action-button">
+
+        <a href="/">返回首頁</a>
+    </form>
+    <footer>
+        <div style="text-align: center; background-color: #333; color: #fff; padding: 10px;">
+            &copy; 2024 明明如意團隊   All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+        function toggleCheckboxes(source) {
+            var checkboxes = document.getElementsByName('selected');
+            for(var i=0, n=checkboxes.length; i<n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+    
+        // 檢查是否有checkbox，決定是否顯示全選框
+        window.onload = function() {
+            var checkboxes = document.getElementsByName('selected');
+            var hasCheckbox = false;
+            for(var i=0; i<checkboxes.length; i++) {
+                if(checkboxes[i].type === 'checkbox') {
+                    hasCheckbox = true;
+                    break;
+                }
+            }
+            if(hasCheckbox) {
+                document.getElementById('selectAll').style.display = 'inline';
+            }
+        }
+    </script>
+
+</body>
+</html>

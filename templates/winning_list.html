@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Winning List</title>
+    <style>
+        /* 基本的頁面樣式 */
+        body {
+            margin: 0;
+            padding: 0;
+            background-image: url('../static/images/background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        .table-container {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            overflow-y: auto; /* 啟用垂直捲軸 */
+            max-height: 70vh;
+            border: 1px solid #ddd; /* 可選，為容器添加邊框 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 加上外框陰影，看起來更有層次感 */
+            background-color: #ffffff; /* 設定背景色為白色，與透明背景形成對比 */
+        }
+        /* 表格樣式，讓表格更顯眼 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            /* margin-top: 20px; */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            background-color: #fff; /* 白色背景讓內容更突出 */
+        }
+
+        th {
+            background-color: #76b947; /* 修改為綠色系背景色 */
+            color: white; /* 修改為白色字體 */
+            font-size: 16px; /* 加大字體讓標題更突出 */
+            position:sticky;
+            top:0;
+        }
+
+        /* 按鈕容器的樣式，讓按鈕水平放置 */
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block; /* 這個屬性會讓按鈕水平排列 */
+        }
+
+        /* 領獎按鈕的樣式 */
+        .action-button[name="action"][value="領獎"] {
+            background-color: #4CAF50;
+        }
+
+        .action-button[name="action"][value="領獎"]:hover {
+            background-color: #45a049;
+        }
+
+        /* 刪除按鈕的樣式，改成紅色 */
+        .action-button[name="action"][value="刪除"] {
+            background-color: #f44336;
+        }
+
+        .action-button[name="action"][value="刪除"]:hover {
+            background-color: #d32f2f;
+        }
+
+        /* 錯誤訊息的樣式 */
+        .message {
+            color: red;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* 返回首頁連結的樣式 */
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #00f;
+            text-decoration: none;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+    <body>
+        
+        <h2>得獎名單</h2>
+        <form method="POST" action="/handle_actions">
+            <div class="table-container">
+            <table>
+                <tr>
+                    <!-- <th>Check</th> -->
+                    <th>SeqNum</th>
+                    <th>Name</th>
+                    <th>PrizeId</th>
+                    <th>Prize Name</th>
+                    <th>Claimed</th>
+                </tr>
+                {% for win in winnings_query %}
+                    <tr>
+                        <!-- <td>
+                            {% if not win.claimed %}
+                            <input type="checkbox" name="selected" value="{{ win.seqNum }}-{{ win.prizeId }}">
+                            {% endif %}
+                        </td> -->
+                        <td>{{ win.seqNum }}</td>
+                        <td>{{ win.name }}</td>
+                        <td>{{ win.prizeId }}</td>
+                        <td>{{ win.prizeName }}</td>
+                        <td>
+                            {% if win.claimed %}
+                                <span style="color: blue;">已領獎</span>
+                            {% else %}
+                                <span style="color: red;">尚未領獎</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            </div>
+            <!-- <div class="button-container">
+                <input type="submit" name="action" value="領獎" class="action-button">
+                <input type="submit" name="action" value="刪除" class="action-button">
+            </div> -->
+            <a href="/">返回首頁</a>
+            <footer>
+                <div style="text-align: center; background-color: #333; color: #fff; padding: 10px;">
+                    &copy; 2024 明明如意團隊   All Rights Reserved.
+                </div>
+            </footer>
+        </form>
+    </body>
+</html>

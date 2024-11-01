@@ -1,0 +1,7 @@
+# templates0 templates1...
+templates[0-9]*
+
+app[0-9]*.py
+app.py
+
+docker指令0.txt

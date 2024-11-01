@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>輸入得獎人</title>
+    <style>
+        body {
+            background-image: url('../static/images/background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+        h3 {
+            text-align: center;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: auto;
+        }
+
+        select, input[type="checkbox"], input[type="submit"] {
+            margin: 8px 0;
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        .checkbox-text {
+            margin-left: 10px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .error {
+            background-color: #ffcccc; /* 淺紅色背景 */
+            color: #d8000c; /* 深紅色文字 */
+            border: 1px solid #d8000c; /* 深紅色邊框 */
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success {
+            background-color: #d4edda; /* 淺綠色背景 */
+            color: #155724; /* 深綠色文字 */
+            border: 1px solid #c3e6cb; 
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .table-container {
+            width: 60vh;
+            margin: 20px auto;
+            border-collapse: collapse;
+            overflow-y: auto; /* 啟用垂直捲軸 */
+            max-height: 400px; /* 設定最大高度 */
+            border: 1px solid #ddd; /* 可選，為容器添加邊框 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 加上外框陰影，看起來更有層次感 */
+            background-color: #ffffff; /* 設定背景色為白色，與透明背景形成對比 */
+        }
+        table {
+            width: 100%;
+            /* margin: 20px auto; */
+            border-collapse: collapse;
+        }
+
+        th, td {
+            /* border: 1px solid #ddd; */
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #a8f7aa;
+            color: black;
+            position:sticky;
+            top:0;
+        }
+
+        td {
+            background-color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>獎品訊息：{{ prize.prizeName }} - 剩餘數量：{{ remaining }}</h2>
+    <!-- 顯示消息的部分 -->
+    {% if message %}
+        <div class="message {% if error %}error{% else %}success{% endif %}">{{ message }}</div>
+    {% endif %}
+    
+    <form action="/input_winner" method="post">
+        <input type="hidden" name="prizeId" value="{{ prize.prizeId }}">
+        <label for="seqNum">得獎人序號：</label>
+        <input type="number" id="seqNum" name="seqNum" autofocus><br>
+        <input type="submit" value="提交">
+    </form>
+
+    <a href="/">返回選擇獎品</a>
+
+    <!-- 顯示該獎品所有得獎人(winners) -->
+    <h3>得獎名單</h3>
+    <div class="warning" style="color: red; font-weight: bold; margin-bottom: 10px; text-align: center;">
+        *請注意：輸入得獎者前，務必確認獎項正確無誤*
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>序號</th>
+                    <th>姓名</th>
+                    <th>是否已領獎</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if winners %}
+                    {% for winner in winners %}
+                        <tr>
+                            <!-- <td>{{ winner[0] }}</td>
+                            <td>{{ winner[1] }}</td> -->
+                            <td>{{ winner.seqNum }}</td>
+                            <td>{{ winner.name }}</td>
+                            <td>
+                                {% if winner.claimed %}
+                                    <span style="color: blue;">已領獎</span>
+                                {% else %}
+                                    <span style="color: red;">尚未領獎</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <footer>
+        <div style="text-align: center; background-color: #333; color: #fff; padding: 10px;">
+            &copy; 2024 明明如意團隊   All Rights Reserved.
+        </div>
+    </footer>
+</body>
+</html>

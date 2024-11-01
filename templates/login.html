@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>登入</title>
+    <style>
+        /* 添加背景圖片，並設定CSS風格 */
+        body {
+            background-image: url('../static/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.8); /* 半透明白色背景 */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px; /* 最大寬度限制 */
+            width: 100%; /* 適應螢幕寬度 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 加上外框陰影，看起來更有層次感 */
+        }
+
+        label {
+            color: #333; /* 深色文字 */
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: block; /* 讓標籤占滿整行 */
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 20px); /* 考慮邊距的寬度 */
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #d33; /* 深紅色按鈕 */
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #b22; /* 鼠標懸停時的顏色變化 */
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <form method="post">
+        <label for="username">使用者名稱：</label>
+        <input type="text" id="username" name="username"><br>
+        
+        <label for="password">密碼：</label>
+        <input type="password" id="password" name="password"><br>
+        
+        <input type="submit" value="登入">
+
+        <footer>
+            <div style="text-align: center; background-color: #333; color: #fff; padding: 10px;">
+                &copy; 2024 明明如意團隊   All Rights Reserved.
+            </div>
+        </footer>
+    </form>
+
+</body>
+</html>
